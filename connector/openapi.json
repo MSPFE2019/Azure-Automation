@@ -1,0 +1,841 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Azure Automation (ARM)",
+    "description": "Starter Microsoft Power Platform custom connector for Azure Automation via Azure Resource Manager.",
+    "version": "1.0.0"
+  },
+  "host": "management.azure.com",
+  "basePath": "/",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "x-ms-api-annotation": {
+    "family": "AzureAutomation",
+    "revision": 1
+  },
+  "x-ms-connection-parameters": {
+    "tenantId": {
+      "type": "string",
+      "uiDefinition": {
+        "displayName": "Tenant ID",
+        "description": "Microsoft Entra tenant ID (GUID) or domain, for example contoso.onmicrosoft.com.",
+        "tooltip": "Used for OAuth authorization/token endpoints.",
+        "constraints": {
+          "required": "true"
+        }
+      }
+    },
+    "subscriptionId": {
+      "type": "string",
+      "uiDefinition": {
+        "displayName": "Subscription ID",
+        "description": "Azure subscription ID that contains Azure Automation resources.",
+        "tooltip": "You can override this value per action if needed.",
+        "constraints": {
+          "required": "true"
+        }
+      }
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "uiDefinition": {
+        "displayName": "Resource group",
+        "description": "Resource group that contains the Azure Automation account.",
+        "tooltip": "You can override this value per action if needed.",
+        "constraints": {
+          "required": "true"
+        }
+      }
+    },
+    "automationAccountName": {
+      "type": "string",
+      "uiDefinition": {
+        "displayName": "Automation account",
+        "description": "Azure Automation account name.",
+        "tooltip": "You can override this value per action if needed.",
+        "constraints": {
+          "required": "true"
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "azure_auth": {
+      "type": "oauth2",
+      "flow": "accessCode",
+      "authorizationUrl": "https://login.microsoftonline.com/{tenantId}/oauth2/authorize",
+      "tokenUrl": "https://login.microsoftonline.com/{tenantId}/oauth2/token",
+      "scopes": {
+        "https://management.azure.com/user_impersonation": "Access Azure Resource Manager as the signed-in user."
+      }
+    }
+  },
+  "security": [
+    {
+      "azure_auth": [
+        "https://management.azure.com/user_impersonation"
+      ]
+    }
+  ],
+  "paths": {
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Automation/automationAccounts": {
+      "get": {
+        "operationId": "ListAutomationAccounts",
+        "summary": "List automation accounts in a resource group",
+        "description": "Lists Azure Automation accounts in the specified resource group.",
+        "x-ms-summary": "List automation accounts",
+        "x-ms-visibility": "important",
+        "x-ms-api-annotation": {
+          "family": "AzureAutomation",
+          "revision": 1
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/subscriptionId"
+          },
+          {
+            "$ref": "#/parameters/resourceGroupName"
+          },
+          {
+            "$ref": "#/parameters/apiVersion"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Automation accounts retrieved successfully.",
+            "schema": {
+              "$ref": "#/definitions/AutomationAccountListResult"
+            }
+          },
+          "default": {
+            "description": "Error response.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-ms-pageable": {
+          "nextLinkName": "nextLink"
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Automation/automationAccounts/{automationAccountName}": {
+      "get": {
+        "operationId": "GetAutomationAccount",
+        "summary": "Get an automation account",
+        "description": "Gets details for a specific Azure Automation account.",
+        "x-ms-summary": "Get automation account",
+        "x-ms-visibility": "important",
+        "x-ms-api-annotation": {
+          "family": "AzureAutomation",
+          "revision": 1
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/subscriptionId"
+          },
+          {
+            "$ref": "#/parameters/resourceGroupName"
+          },
+          {
+            "$ref": "#/parameters/automationAccountName"
+          },
+          {
+            "$ref": "#/parameters/apiVersion"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Automation account retrieved successfully.",
+            "schema": {
+              "$ref": "#/definitions/AutomationAccount"
+            }
+          },
+          "default": {
+            "description": "Error response.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Automation/automationAccounts/{automationAccountName}/runbooks": {
+      "get": {
+        "operationId": "ListRunbooks",
+        "summary": "List runbooks",
+        "description": "Lists runbooks in an Azure Automation account.",
+        "x-ms-summary": "List runbooks",
+        "x-ms-visibility": "important",
+        "x-ms-api-annotation": {
+          "family": "AzureAutomation",
+          "revision": 1
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/subscriptionId"
+          },
+          {
+            "$ref": "#/parameters/resourceGroupName"
+          },
+          {
+            "$ref": "#/parameters/automationAccountName"
+          },
+          {
+            "$ref": "#/parameters/apiVersion"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Runbooks retrieved successfully.",
+            "schema": {
+              "$ref": "#/definitions/RunbookListResult"
+            }
+          },
+          "default": {
+            "description": "Error response.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-ms-pageable": {
+          "nextLinkName": "nextLink"
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Automation/automationAccounts/{automationAccountName}/runbooks/{runbookName}": {
+      "get": {
+        "operationId": "GetRunbook",
+        "summary": "Get a runbook",
+        "description": "Gets a runbook definition from an Azure Automation account.",
+        "x-ms-summary": "Get runbook",
+        "x-ms-visibility": "important",
+        "x-ms-api-annotation": {
+          "family": "AzureAutomation",
+          "revision": 1
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/subscriptionId"
+          },
+          {
+            "$ref": "#/parameters/resourceGroupName"
+          },
+          {
+            "$ref": "#/parameters/automationAccountName"
+          },
+          {
+            "$ref": "#/parameters/runbookName"
+          },
+          {
+            "$ref": "#/parameters/apiVersion"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Runbook retrieved successfully.",
+            "schema": {
+              "$ref": "#/definitions/Runbook"
+            }
+          },
+          "default": {
+            "description": "Error response.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Automation/automationAccounts/{automationAccountName}/jobs": {
+      "get": {
+        "operationId": "ListJobs",
+        "summary": "List automation jobs",
+        "description": "Lists jobs for an Azure Automation account.",
+        "x-ms-summary": "List jobs",
+        "x-ms-visibility": "important",
+        "x-ms-api-annotation": {
+          "family": "AzureAutomation",
+          "revision": 1
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/subscriptionId"
+          },
+          {
+            "$ref": "#/parameters/resourceGroupName"
+          },
+          {
+            "$ref": "#/parameters/automationAccountName"
+          },
+          {
+            "$ref": "#/parameters/filter"
+          },
+          {
+            "$ref": "#/parameters/apiVersion"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Jobs retrieved successfully.",
+            "schema": {
+              "$ref": "#/definitions/JobListResult"
+            }
+          },
+          "default": {
+            "description": "Error response.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-ms-pageable": {
+          "nextLinkName": "nextLink"
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Automation/automationAccounts/{automationAccountName}/jobs/{jobName}": {
+      "get": {
+        "operationId": "GetJob",
+        "summary": "Get a job",
+        "description": "Gets details for a specific Azure Automation job.",
+        "x-ms-summary": "Get job",
+        "x-ms-visibility": "important",
+        "x-ms-api-annotation": {
+          "family": "AzureAutomation",
+          "revision": 1
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/subscriptionId"
+          },
+          {
+            "$ref": "#/parameters/resourceGroupName"
+          },
+          {
+            "$ref": "#/parameters/automationAccountName"
+          },
+          {
+            "$ref": "#/parameters/jobName"
+          },
+          {
+            "$ref": "#/parameters/apiVersion"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Job retrieved successfully.",
+            "schema": {
+              "$ref": "#/definitions/Job"
+            }
+          },
+          "default": {
+            "description": "Error response.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "StartRunbook",
+        "summary": "Start a runbook (create job)",
+        "description": "Starts a runbook by creating an Azure Automation job. Provide a unique job name and optional runbook parameters.",
+        "x-ms-summary": "Start runbook",
+        "x-ms-visibility": "important",
+        "x-ms-api-annotation": {
+          "family": "AzureAutomation",
+          "revision": 1
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/subscriptionId"
+          },
+          {
+            "$ref": "#/parameters/resourceGroupName"
+          },
+          {
+            "$ref": "#/parameters/automationAccountName"
+          },
+          {
+            "$ref": "#/parameters/jobName"
+          },
+          {
+            "$ref": "#/parameters/apiVersion"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/JobCreateParameters"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Runbook job created successfully.",
+            "schema": {
+              "$ref": "#/definitions/Job"
+            }
+          },
+          "default": {
+            "description": "Error response.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Automation/automationAccounts/{automationAccountName}/jobs/{jobName}/stop": {
+      "post": {
+        "operationId": "StopJob",
+        "summary": "Stop a job",
+        "description": "Stops an in-progress Azure Automation job.",
+        "x-ms-summary": "Stop job",
+        "x-ms-visibility": "important",
+        "x-ms-api-annotation": {
+          "family": "AzureAutomation",
+          "revision": 1
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/subscriptionId"
+          },
+          {
+            "$ref": "#/parameters/resourceGroupName"
+          },
+          {
+            "$ref": "#/parameters/automationAccountName"
+          },
+          {
+            "$ref": "#/parameters/jobName"
+          },
+          {
+            "$ref": "#/parameters/apiVersion"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Job stop request accepted."
+          },
+          "default": {
+            "description": "Error response.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "parameters": {
+    "subscriptionId": {
+      "name": "subscriptionId",
+      "in": "path",
+      "required": true,
+      "type": "string",
+      "description": "Azure subscription ID.",
+      "x-ms-summary": "Subscription ID",
+      "x-ms-visibility": "important",
+      "example": "00000000-0000-0000-0000-000000000000"
+    },
+    "resourceGroupName": {
+      "name": "resourceGroupName",
+      "in": "path",
+      "required": true,
+      "type": "string",
+      "description": "Azure resource group name.",
+      "x-ms-summary": "Resource group",
+      "x-ms-visibility": "important",
+      "example": "rg-automation-prod"
+    },
+    "automationAccountName": {
+      "name": "automationAccountName",
+      "in": "path",
+      "required": true,
+      "type": "string",
+      "description": "Azure Automation account name.",
+      "x-ms-summary": "Automation account",
+      "x-ms-visibility": "important",
+      "x-ms-dynamic-values": {
+        "operationId": "ListAutomationAccounts",
+        "value-path": "name",
+        "value-title": "name",
+        "parameters": {
+          "subscriptionId": "{subscriptionId}",
+          "resourceGroupName": "{resourceGroupName}",
+          "api-version": "2024-10-23"
+        }
+      },
+      "example": "contoso-auto"
+    },
+    "runbookName": {
+      "name": "runbookName",
+      "in": "path",
+      "required": true,
+      "type": "string",
+      "description": "Runbook name.",
+      "x-ms-summary": "Runbook",
+      "x-ms-visibility": "important",
+      "x-ms-dynamic-values": {
+        "operationId": "ListRunbooks",
+        "value-path": "name",
+        "value-title": "name",
+        "parameters": {
+          "subscriptionId": "{subscriptionId}",
+          "resourceGroupName": "{resourceGroupName}",
+          "automationAccountName": "{automationAccountName}",
+          "api-version": "2024-10-23"
+        }
+      },
+      "example": "Start-VmFleet"
+    },
+    "jobName": {
+      "name": "jobName",
+      "in": "path",
+      "required": true,
+      "type": "string",
+      "description": "Job name (typically a GUID).",
+      "x-ms-summary": "Job name",
+      "x-ms-visibility": "important",
+      "x-ms-dynamic-values": {
+        "operationId": "ListJobs",
+        "value-path": "name",
+        "value-title": "name",
+        "parameters": {
+          "subscriptionId": "{subscriptionId}",
+          "resourceGroupName": "{resourceGroupName}",
+          "automationAccountName": "{automationAccountName}",
+          "api-version": "2024-10-23"
+        }
+      },
+      "example": "9e890877-df3d-4f39-b9e8-ef2bd68d7a0f"
+    },
+    "filter": {
+      "name": "$filter",
+      "in": "query",
+      "required": false,
+      "type": "string",
+      "description": "OData filter for jobs.",
+      "x-ms-summary": "Filter",
+      "x-ms-visibility": "advanced",
+      "example": "properties/status eq 'Running'"
+    },
+    "apiVersion": {
+      "name": "api-version",
+      "in": "query",
+      "required": true,
+      "type": "string",
+      "description": "Azure Automation ARM API version.",
+      "x-ms-summary": "API version",
+      "x-ms-visibility": "internal",
+      "enum": [
+        "2024-10-23"
+      ],
+      "default": "2024-10-23"
+    }
+  },
+  "definitions": {
+    "ResourceReference": {
+      "type": "object",
+      "description": "ARM resource reference.",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        }
+      }
+    },
+    "AutomationAccount": {
+      "type": "object",
+      "description": "Azure Automation account resource.",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "example": "Microsoft.Automation/automationAccounts"
+        },
+        "location": {
+          "type": "string",
+          "example": "eastus"
+        },
+        "etag": {
+          "type": "string"
+        },
+        "properties": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "automationHybridServiceUrl": {
+              "type": "string"
+            },
+            "state": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ]
+    },
+    "AutomationAccountListResult": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AutomationAccount"
+          }
+        },
+        "nextLink": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "value"
+      ]
+    },
+    "Runbook": {
+      "type": "object",
+      "description": "Automation runbook resource.",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "example": "Microsoft.Automation/automationAccounts/runbooks"
+        },
+        "etag": {
+          "type": "string"
+        },
+        "properties": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "runbookType": {
+              "type": "string",
+              "example": "PowerShell"
+            },
+            "state": {
+              "type": "string",
+              "example": "Published"
+            },
+            "description": {
+              "type": "string"
+            },
+            "lastModifiedTime": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ]
+    },
+    "RunbookListResult": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Runbook"
+          }
+        },
+        "nextLink": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "value"
+      ]
+    },
+    "RunbookAssociationProperty": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Runbook name to execute.",
+          "example": "Start-VmFleet"
+        }
+      },
+      "required": [
+        "name"
+      ]
+    },
+    "JobCreateProperties": {
+      "type": "object",
+      "properties": {
+        "runbook": {
+          "$ref": "#/definitions/RunbookAssociationProperty"
+        },
+        "parameters": {
+          "type": "object",
+          "description": "Runbook parameter name/value pairs.",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "example": {
+            "TargetResourceGroup": "rg-workloads",
+            "DryRun": "true"
+          }
+        },
+        "runOn": {
+          "type": "string",
+          "description": "Optional Hybrid Runbook Worker group.",
+          "example": "contoso-hybrid-group"
+        }
+      },
+      "required": [
+        "runbook"
+      ]
+    },
+    "JobCreateParameters": {
+      "type": "object",
+      "properties": {
+        "properties": {
+          "$ref": "#/definitions/JobCreateProperties"
+        }
+      },
+      "required": [
+        "properties"
+      ],
+      "example": {
+        "properties": {
+          "runbook": {
+            "name": "Start-VmFleet"
+          },
+          "parameters": {
+            "TargetResourceGroup": "rg-workloads",
+            "DryRun": "true"
+          }
+        }
+      }
+    },
+    "Job": {
+      "type": "object",
+      "description": "Automation job resource.",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "example": "Microsoft.Automation/automationAccounts/jobs"
+        },
+        "properties": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "jobId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "status": {
+              "type": "string",
+              "example": "Running"
+            },
+            "creationTime": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "startTime": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "endTime": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "runbook": {
+              "$ref": "#/definitions/RunbookAssociationProperty"
+            },
+            "exception": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ]
+    },
+    "JobListResult": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Job"
+          }
+        },
+        "nextLink": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "value"
+      ]
+    },
+    "ErrorDetail": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "target": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ErrorDetail"
+          }
+        }
+      }
+    },
+    "ErrorResponse": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "$ref": "#/definitions/ErrorDetail"
+        }
+      }
+    }
+  }
+}
